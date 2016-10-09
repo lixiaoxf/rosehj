@@ -1,0 +1,4 @@
+mongoengine
+flask
+flask-login
+flask-script
