@@ -34,13 +34,13 @@ def upload():
     if not is_allowed_size(f):
         return res(code=Errors.UPLOAD_SIZE_LIMITATION)
 
+    ext = os.path.splitext(f.filename)[-1].strip('.').lower()
     data = f.stream.read()
     md5 = MD5(data).md5_content
     exists = gfs.find_one({'md5': md5})
     if not exists:
         original_filename = f.filename
         content_type = f.content_type
-        ext = os.path.splitext(f.filename)[-1].strip('.')
         filename = get_unique_name(ext)
         file_id = gfs.put(data, filename=filename, original_filename=original_filename, content_type=content_type)
     else:
@@ -48,7 +48,7 @@ def upload():
         filename = exists.filename
 
     url = url_for('file.show', file_id=file_id)
-    return res(data=dict(id=unicode(file_id), name=filename, url=url))
+    return res(data=dict(id=unicode(file_id), name=filename, original_filename=f.filename, url=url, ext=ext))
 
 
 @instance.route('/file/download/<regex("[0-9a-z]{24}"):file_id>', methods=['GET'])

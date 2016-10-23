@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from mongoengine import StringField, IntField
+from flask import url_for
 
 from . import BaseDocument, register_pre_save
 from configs.config import conf
@@ -25,9 +26,15 @@ class Resource(BaseDocument):
 
     name = StringField()
     type = IntField(choices=RESOURCE_TYPE)
+    file_id = StringField()
 
     meta = {
         'collection': 'resource',
         'db_alias': conf.DATABASE_NAME,
         'strict': False
     }
+
+    def as_dict(self):
+        dic = dict(self.to_mongo())
+        dic['url'] = url_for('file.show', file_id=self.file_id)
+        return dic
