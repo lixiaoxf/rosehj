@@ -48,16 +48,69 @@ class Resource(BaseDocument):
         return dic
 
 
-class EmbedComment(EmbeddedDocument):
-    comment = StringField()
+@register_pre_save()
+class Reply(BaseDocument):
+    comment_id = StringField()
+    reply_id = StringField(default='')
+    content = StringField()
     nickname = StringField()
     email = StringField()
+    to_nickname = StringField()
+    to_email = StringField()
     notify = BooleanField(default=False)
-    created_at = DateTimeField()
+    website = StringField()
+
+    meta = {
+        'collection': 'reply',
+        'db_alias': conf.DATABASE_NAME,
+        'strict': False
+    }
 
     def as_dict(self):
         dic = dict(self.to_mongo())
         dic['created_at'] = format_datetime(self.created_at, '%b %d, %Y')
+        if 'updated_at' in dic:
+            del dic['updated_at']
+
+        if 'deleted_at' in dic:
+            del dic['deleted_at']
+        return dic
+
+
+@register_pre_save()
+class CommentText(BaseDocument):
+    content = StringField()
+    content_id = StringField()
+    nickname = StringField()
+    email = StringField()
+    to_nickname = StringField()
+    to_email = StringField()
+    notify = BooleanField(default=False)
+    website = StringField()
+
+    meta = {
+        'collection': 'comment',
+        'db_alias': conf.DATABASE_NAME,
+        'strict': False
+    }
+
+    @property
+    def replies(self):
+        rs = []
+        for r in Reply.objects(comment_id=self.id, reply_id='', deleted_at=None):
+            rs.append(r.as_dict())
+        return rs
+
+    def as_dict(self):
+        dic = dict(self.to_mongo())
+        dic['created_at'] = format_datetime(self.created_at, '%b %d, %Y')
+        if 'updated_at' in dic:
+            del dic['updated_at']
+
+        if 'deleted_at' in dic:
+            del dic['deleted_at']
+
+        dic['replies'] = self.replies
         return dic
 
 
@@ -96,7 +149,6 @@ class Content(BaseDocument):
     author_id = StringField()  # 作者
     from_id = IntField(default=FROM_HJ_WORLD, choices=FROM_IDS)  # 来源
     tags = ListField(StringField(), default=[])
-    comments = ListField(EmbeddedDocumentField(EmbedComment), default=[])
 
     meta = {
         'collection': 'content',
@@ -104,11 +156,16 @@ class Content(BaseDocument):
         'strict': False
     }
 
+    @property
+    def comments(self):
+        cts = []
+        for comment in CommentText.objects(content_id=self.id, deleted_at=None):
+            cts.append(comment.as_dict())
+        return cts
+
+
     def as_dict(self):
         dic = dict(self.to_mongo())
-        comments = []
-        for comment in self.comments:
-            comments.append(comment.as_dict())
-        dic['comments'] = comments
+        dic['comments'] = self.comments
         dic['created_at'] = format_datetime(self.created_at, '%b %d, %Y')
         return dic
