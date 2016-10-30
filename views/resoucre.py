@@ -5,8 +5,9 @@ from flask import Blueprint, request, url_for
 from flask_login import login_required, current_user
 
 from . import res
-from models.resource import Resource, Content
+from models.resource import Resource, Content, Tag
 from errors import Errors
+from utils.datetime_utils import now_lambda
 
 instance = Blueprint('resource', __name__)
 
@@ -45,7 +46,7 @@ def edit():
 
 
 @instance.route('/article/index', methods=['POST'])
-def article():
+def article_index():
     """
     文章列表
     page              页
@@ -136,3 +137,94 @@ def article_edit():
     c.tags = tags
     c.save()
     return res(data=c.as_dict())
+
+
+@instance.route('/article/delete', methods=['POST'])
+@login_required
+def article_delete():
+    """
+    删除文章
+    article_id         文章ID   （可选, 编辑时必填）
+    :return:
+    """
+    article_id = request.form.get('article_id')
+    if not article_id:
+        return res(Errors.PARAMS_REQUIRED)
+
+
+    c = Content.objects(id=article_id, deleted_at=None).first()
+    if not c:
+        return res(Errors.NOT_FOUND)
+
+    c.deleted_at = now_lambda()
+    c.save()
+    return res()
+
+
+@instance.route('/tags/index', methods=['POST'])
+def tag_index():
+    """
+    标签加载
+    :return:
+    """
+
+    ts = Tag.objects(deleted_at=None)
+    data = [t.as_dict() for t in ts]
+    return res(data=data)
+
+
+@instance.route('/tags/edit', methods=['POST'])
+@login_required
+def tag_edit():
+    """
+    新建/编辑标签
+    tag_id         标签ID   （可选, 编辑时必填）
+    name           标签名
+    :return:
+    """
+    tag_id = request.form.get('tag_id')
+    if not tag_id:
+        return res(Errors.PARAMS_REQUIRED)
+
+    name = request.form.get('name')
+    if not name:
+        return res(Errors.PARAMS_REQUIRED)
+
+    t = Tag.objects(id=tag_id, deleted_at=None).first()
+    if not t:
+        t = Tag()
+
+    t.name = name
+    t.save()
+    return res(data=t.as_dict())
+
+
+@instance.route('/tags/delete', methods=['POST'])
+@login_required
+def tag_delete():
+    """
+    删除标签
+    tag_id         标签ID   （可选, 编辑时必填）
+    name           标签名
+    :return:
+    """
+    tag_id = request.form.get('tag_id')
+    if not tag_id:
+        return res(Errors.PARAMS_REQUIRED)
+
+
+    t = Tag.objects(id=tag_id, deleted_at=None).first()
+    if not t:
+        return res(Errors.NOT_FOUND)
+
+    t.deleted_at = now_lambda()
+    t.save()
+    return res()
+
+
+
+
+
+
+
+
