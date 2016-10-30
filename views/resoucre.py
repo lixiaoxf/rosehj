@@ -89,7 +89,12 @@ def article_details():
     if not c:
         return res(Errors.NOT_FOUND)
 
-    return res(data=c.as_dict())
+    pre = Content.objects(created_at__gt=c.created_at).order_by('created_at').first()
+    next = Content.objects(created_at__lt=c.created_at).order_by('-created_at').first()
+
+    return res(data=dict(data=c.as_dict(),
+                         pre_data=pre.as_dict() if pre else None,
+                         next_data=next.as_dict() if next else None))
 
 
 @instance.route('/article/edit', methods=['POST'])
