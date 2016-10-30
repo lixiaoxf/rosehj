@@ -1,8 +1,7 @@
 # -*- coding: utf8 -*-
 from __future__ import unicode_literals
-from django.shortcuts import redirect
 
-from flask import Blueprint, render_template, jsonify, request, url_for
+from flask import Blueprint, render_template, jsonify, request, url_for, redirect
 from flask_login import login_required, current_user
 
 from models.user import User
