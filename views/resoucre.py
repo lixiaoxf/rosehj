@@ -66,7 +66,7 @@ def article_index():
 
     page = request.form.get('page', 1, int)
 
-    cs = Content.objects(**conditions)
+    cs = Content.objects(**conditions).order_by('-created_at')
     per_page = 10
     total = cs.count()
     data = [c.as_dict() for c in cs[per_page * (page - 1): per_page * page]]
