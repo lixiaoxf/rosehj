@@ -5,12 +5,14 @@ import glob
 
 from flask import Flask
 from flask_login import LoginManager
+from flask_mail import Mail
 from werkzeug.routing import BaseConverter
 
 
 from configs.config import conf
 from models.user import User
 
+mail = Mail()
 login_manager = LoginManager()
 # login_manager.session_protection = 'strong'
 login_manager.login_view = 'index.index'
@@ -52,6 +54,8 @@ def __config_blueprint(app):
 
 def create_app():
     app = Flask(__name__)
+
+    mail.init_app(app)
     # 读配置文件
     app.config.from_object(conf)
     # flask扩展

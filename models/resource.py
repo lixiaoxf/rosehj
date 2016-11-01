@@ -50,14 +50,18 @@ class Resource(BaseDocument):
 
 @register_pre_save()
 class Reply(BaseDocument):
+    """
+    对评价的回复分2级
+    """
     comment_id = StringField()
-    reply_id = StringField(default='')
+    parent_id = StringField(default='')
     content = StringField()
     nickname = StringField()
     email = StringField()
     to_nickname = StringField()
     to_email = StringField()
-    notify = BooleanField(default=False)
+    notify_new_post = BooleanField(default=False)
+    notify_follow_up = BooleanField(default=False)
     website = StringField()
 
     meta = {
@@ -74,6 +78,12 @@ class Reply(BaseDocument):
 
         if 'deleted_at' in dic:
             del dic['deleted_at']
+
+        if not self.parent_id:
+            replies = []
+            for r in self.__class__.objects(parent_id=self.id).order_by('created_at'):
+                replies.append(r.as_dict())
+            dic['replies'] = replies
         return dic
 
 
@@ -83,9 +93,8 @@ class CommentText(BaseDocument):
     content_id = StringField()
     nickname = StringField()
     email = StringField()
-    to_nickname = StringField()
-    to_email = StringField()
-    notify = BooleanField(default=False)
+    notify_new_post = BooleanField(default=False)
+    notify_follow_up = BooleanField(default=False)
     website = StringField()
 
     meta = {
@@ -97,7 +106,7 @@ class CommentText(BaseDocument):
     @property
     def replies(self):
         rs = []
-        for r in Reply.objects(comment_id=self.id, reply_id='', deleted_at=None):
+        for r in Reply.objects(comment_id=self.id, parent_id='', deleted_at=None).order_by('created_at'):
             rs.append(r.as_dict())
         return rs
 
@@ -162,7 +171,6 @@ class Content(BaseDocument):
         for comment in CommentText.objects(content_id=self.id, deleted_at=None):
             cts.append(comment.as_dict())
         return cts
-
 
     def as_dict(self):
         dic = dict(self.to_mongo())

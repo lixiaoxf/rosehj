@@ -5,9 +5,10 @@ from flask import Blueprint, request, url_for
 from flask_login import login_required, current_user
 
 from . import res
-from models.resource import Resource, Content, Tag
+from models.resource import Resource, Content, Tag, CommentText, Reply
 from errors import Errors
 from utils.datetime_utils import now_lambda
+from utils.mail_utils import Email
 
 instance = Blueprint('resource', __name__)
 
@@ -132,7 +133,9 @@ def article_edit():
         return res(Errors.PARAMS_REQUIRED)
 
     c = Content.objects(id=content_id, deleted_at=None).first()
+    mode = 'update'
     if not c:
+        mode = 'new'
         c = Content()
 
     c.title = title
@@ -141,6 +144,17 @@ def article_edit():
     c.from_id = from_id
     c.tags = tags
     c.save()
+
+    if mode == 'new':
+        emails1 = CommentText.objects(notify_new_post=True).distinct('email')
+        emails2 = Reply.objects().distinct(notify_new_post=True).distinct('email')
+        emails = list(set(emails1 + emails2))
+        body = """
+        Hi, I have new posts, como here >> http://www.baidu.com
+        """
+        e = Email('hjrose', emails, sender=None, subject='Have a new reply!', body=body, html=None)
+        e.send_email()
+
     return res(data=c.as_dict())
 
 
@@ -217,7 +231,6 @@ def tag_delete():
     if not tag_id:
         return res(Errors.PARAMS_REQUIRED)
 
-
     t = Tag.objects(id=tag_id, deleted_at=None).first()
     if not t:
         return res(Errors.NOT_FOUND)
@@ -225,6 +238,105 @@ def tag_delete():
     t.deleted_at = now_lambda()
     t.save()
     return res()
+
+
+@instance.route('/article/comment', methods=['POST'])
+def article_comment():
+    """
+    文章评论
+    content              评论内容
+    content_id           文章ID
+    nickname             昵称
+    email                邮箱
+    website              个人网站
+    notify_new_post      是否有新文章给回复
+    notify_follow_up     是否有新回复给回复
+    :return:
+    """
+    content = request.form.get('content')
+    content_id = request.form.get('content_id')
+    nickname = request.form.get('nickname')
+    email = request.form.get('email')
+    website = request.form.get('website')
+    notify_new_post = request.form.get('notify_new_post', 0, int)  # 0是false 1是true
+    notify_follow_up = request.form.get('notify_follow_up', 0, int)  # 0是false 1是true
+
+    if not content_id or not content or not nickname or not email:
+        return res(Errors.PARAMS_REQUIRED)
+
+    ct = CommentText()
+    ct.content_id = content_id
+    ct.nickname = nickname
+    ct.content = content
+    ct.email = email
+    ct.website = website
+    ct.notify_new_post = True if notify_new_post else False
+    ct.notify_follow_up = True if notify_follow_up else False
+    ct.save()
+    return res(data=ct.as_dict())
+
+
+@instance.route('/comment/reply', methods=['POST'])
+def article_comment():
+    """
+    评论回复
+    comment_id           评论ID
+    parent_id            一级回复ID 如果是一级 那就传''
+    content              评论内容
+    nickname             昵称
+    email                邮箱
+    website              个人网站
+    notify_new_post      是否有新文章给回复
+    notify_follow_up     是否有新回复给回复
+    :return:
+    """
+
+    comment_id = request.form.get('comment_id')
+    parent_id = request.form.get('parent_id')
+    content = request.form.get('content')
+    nickname = request.form.get('nickname')
+    email = request.form.get('email')
+    website = request.form.get('website')
+    notify_new_post = request.form.get('notify_new_post', 0, int)  # 0是false 1是true
+    notify_follow_up = request.form.get('notify_follow_up', 0, int)  # 0是false 1是true
+
+    if not comment_id or not content or not nickname or not email:
+        return res(Errors.PARAMS_REQUIRED)
+
+    if parent_id:  # 子回复
+        r = Reply.objects(id=parent_id).first()
+        notify_follow_up = r.notify_follow_up
+        to_nickname = r.nickname
+        to_email = r.email
+    else:  # 一级回复
+        ct = CommentText.objects(id=comment_id).first()
+        notify_follow_up = ct.notify_follow_up
+        to_nickname = ct.nickname
+        to_email = ct.email
+
+    r = Reply()
+    r.comment_id = comment_id
+    r.parent_id = parent_id
+    r.nickname = nickname
+    r.content = content
+    r.email = email
+    r.website = website
+    r.to_nickname = to_nickname
+    r.to_email = to_email
+    r.notify_new_post = True if notify_new_post else False
+    r.notify_follow_up = True if notify_follow_up else False
+    r.save()
+
+    if notify_follow_up:
+        body = """
+        Hi, your have a new reply in hjrose's zone, check it out >> http://www.baidu.com
+        """
+        e = Email('hjrose', [to_nickname], sender=None, subject='Have a new reply!', body=body, html=None)
+        e.send_email()
+
+    return res(data=r.as_dict())
+
+
 
 
 

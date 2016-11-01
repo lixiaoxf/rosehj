@@ -8,6 +8,16 @@ class Config(object):
     # 加密salt
     SALT = '*^)h#a&n@#$;.'
 
+    MAIL_SERVER = 'smtp.126.com'
+    MAIL_PORT = 25
+    MAIL_USE_TLS = True
+    MAIL_USE_SSL = False
+    MAIL_USERNAME = 'ink_tech'
+    MAIL_PASSWORD = 'mqhaner27'
+    MAIL_DEFAULT_SENDER = None
+    MAIL_MAX_EMAILS = 25
+    MAIL_ASCII_ATTACHMENTS = True
+
     # mongodb 链接信息
     DATABASE_NAME = 'rosehj'
     DATABASE_HOST = '127.0.0.1'
