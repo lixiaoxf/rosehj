@@ -5,7 +5,6 @@ import random
 from gridfs import GridFS
 
 from mongoengine import signals, connect, Document, StringField, DateTimeField
-from redis import Redis
 
 from utils.string_utils import get_upper_letters
 from configs.config import conf

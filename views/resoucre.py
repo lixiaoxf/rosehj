@@ -277,7 +277,7 @@ def article_comment():
 
 
 @instance.route('/comment/reply', methods=['POST'])
-def article_comment():
+def comment_reply():
     """
     评论回复
     comment_id           评论ID

@@ -1,0 +1,79 @@
+.site-header hgroup{
+    height:0;
+    overflow: hidden;
+}
+.site-header{
+    text-align: center;
+    margin-bottom: 55px;
+}
+.site-header-banner img{
+    display:inline-block;
+    vertical-align: middle;
+    max-width: 100%;
+    height: auto;
+    margin-top: 24px;
+}
+.site-header-nav{
+    margin-top: 24px;
+}
+.menu-toggle{
+    display: none;
+    font-size: 12px;
+    border:none;
+    color: #5e5e5e;
+    padding:6px 10px;
+    background: transparent;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    -webkit-tap-highlight-color:transparent;
+    font-size: 0;
+    -webkit-appearance: none;
+    text-decoration: none;
+    outline-color: transparent;
+    outline: none;
+    margin-bottom: 20px;
+}
+.menu-toggle:focus,.menu-toggle{
+    border: none!important;
+}
+.menu-name{
+    display: inline-block;
+    font-size: 12px;
+    vertical-align: middle;
+}
+.menu-toggle .icon-wrap{
+    display: inline-block;
+    margin-left: 5px;
+    vertical-align: middle;
+}
+.menu-toggle .icon-bar{
+    margin-bottom: 2px;
+    width: 14px;
+    background-color: #7c7c7c;
+}
+.site-header-nav ul{
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    text-align: center;
+}
+.site-header-nav li{
+    display: inline-block;
+    margin: 0 10px;
+}
+.site-header-nav li a{
+    cursor: pointer;
+    display: block;
+    line-height: 3.692307692;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: #000;
+    font-family: 'Karla',Verdana,Arial,sans-serif;
+}
+/*响应式部分*/
+@media (max-width:768px){
+    .menu-toggle {
+        display: inline-block;
+    }
+    .site-header-nav li{
+        display: block;
+    }
+}

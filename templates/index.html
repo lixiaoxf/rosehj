@@ -2,9 +2,54 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title> </title>
+    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link href="../static/css/common/reset/reset.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/common/base/base.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/common/public/header.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/common/public/footer.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/common/public/page.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/index/index.css" rel="stylesheet" type="text/css">
+    <script src="../static/lib/html5shiv/shiv.js" type="text/javascript"></script>
+    <script src="../static/lib/require/require.js" type="text/javascript"></script>
+    <script src="../static/js/main.js" type="text/javascript"></script>
+    <!--<script src="js/page/app.js" type="text/javascript"></script>-->
 </head>
 <body>
-
+<div class="site container">
+    <header class="site-header">
+        <hgroup>
+            <h1><a href="http://www.bryanboy.com/" title="Bryanboy" rel="home">Bryanboy</a></h1>
+            <h2>A fashion blog featuring pics, pictures, photos, images, videos and commentary on trends and pop culture.</h2>
+        </hgroup>
+        <a class="site-header-banner">
+            <img src="http://www.bryanboy.com/wp-content/uploads/2015/02/bryanboy_banner_site-21.jpg">
+        </a>
+        <nav class="site-header-nav">
+            <button class="menu-toggle" toggle-menu="header-nav">
+                <span class="menu-name">MENU</span>
+                <i class="icon-wrap">
+                    <i class="icon-bar"></i>
+                    <i class="icon-bar"></i>
+                    <i class="icon-bar"></i>
+                </i>
+            </button>
+            <ul toggle-menu-content="header-nav">
+                <li><a href="#">HOME</a></li>
+                <li><a href="#/w">SIT`S WORLD</a></li>
+                <li><a href="#/f">FASHION</a></li>
+                <li><a>CONTACT</a></li>
+                <li><a>FACEBOOK</a></li>
+                <li><a>INSTAGRAM</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="site-cotent" site-content>
+        <div class="site-cotent-main" id="articleList"></div>
+    </div>
+    <footer class="site-footer">
+        © Bryanboy Omnimedia Inc. All rights reserved.
+    </footer>
+</div>
 </body>
 </html>

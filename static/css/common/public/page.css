@@ -1,0 +1,11 @@
+.page{
+    font-family: 'Libre Baskerville',Georgia,serif;
+    overflow: hidden;
+    padding:0px 0 30px;
+}
+.page .prev{
+    float: left;
+}
+.page .next{
+    float: right;
+}

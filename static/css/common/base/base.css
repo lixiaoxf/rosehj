@@ -1,0 +1,103 @@
+@import url(http://fonts.googleapis.com/css?family=Libre+Baskerville:400,700,400italic|Karla:700,400,400italic,700italic) ;
+body, button, input, select, textarea {
+    font: 12px/1.5 'Libre Baskerville',"Microsoft Yahei", Arial, "Helvetica Neue", Helvetica, PingFang SC, Hiragino Sans GB, sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+.clearfix {
+    *zoom:1;
+}
+.clearfix:after{
+    content:" ";
+    visibility: hidden;
+    display: block;
+    height: 0;
+    clear: both;
+}
+.fl{
+    float: left;
+}
+.fr{
+    float: right;
+}
+.none {
+    display:none!important;
+}
+.icon{
+    display: inline-block;
+    vertical-align: middle;
+    height: 16px;
+}
+.icon-bar{
+    display: block;
+    width: 22px;
+    height: 2px;
+    border-radius: 1px;
+    background-color: #563d7c;
+}
+.site{
+    margin: 0 auto;
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+}
+.container{
+    width: 701px;
+    padding: 0 81px;
+}
+/*主体内容*/
+.site-content-card{
+    display: block;
+    padding-bottom: 25px;
+    margin-bottom: 50px;
+    font-size: 20px;
+    border-bottom: 1px solid #DDDDDD;
+}
+
+.site-content-card h2{
+    font-weight: 700;
+    font-style: normal;
+    color: #222;
+    font-size:20px;
+}
+.site-content-card-author{
+    font-family: 'Libre Baskerville', Georgia,serif;
+    font-style: italic;
+    color: #000000;
+    font-size: 12px;
+}
+.site-content-card header,.site-content-card-detail{
+    margin-bottom: 24px;
+}
+.site-content-card-detail{
+    font-family:'Libre Baskerville',Georgia,serif,sans-serif;
+}
+
+.site-content-card-detail p{
+    font-family: inherit;
+    font-size: 13px;
+    line-height: 22px;
+}
+.site-content-card-detail img{
+    max-width: 100%;
+    margin: 20px 0;
+}
+.site-content-card footer{
+
+}
+.site-content-card footer div{
+    font-family: 'Libre Baskerville', Georgia,serif;
+    font-style: italic;
+    color: #000000;
+    font-size: 12px;
+}
+
+
+/*响应式部分*/
+@media (max-width:768px){
+    .container {
+        width: 90%;
+        padding:0 5%;
+    }
+    .site{
+        border: none;
+    }
+}
