@@ -2,7 +2,7 @@ requirejs.config({
     baseUrl: "/static/",
     paths: {
         jquery:"lib/jquery/1.12.4/jquery",
-        // pageRouter:"lib/page/page",
+        pageRouter:"lib/page/page",
         director:"lib/director/director"
     },
     shim:{
